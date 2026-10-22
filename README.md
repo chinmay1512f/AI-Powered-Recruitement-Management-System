@@ -1,11 +1,57 @@
 # AI Powered Recruitment Management System
 
-A Flask application that ranks job applicants against a posted opening. HR creates a
-job with required skills, candidates apply with a PDF resume, and the system scores
-every resume on five dimensions, explains each score, and surfaces the skill gaps.
+> Flask app that ranks job applicants against a posted opening using Sentence-BERT
+> semantic matching, per-skill evidence extraction and optional Gemini LLM assessment.
+> Runs fully offline; includes an evaluation harness measuring Spearman rank
+> correlation against hand-labelled ground truth.
 
-It runs **fully offline** using local models. Adding a Gemini API key is optional and
-measurably improves ranking quality (see *Accuracy* below).
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white)
+![Sentence-BERT](https://img.shields.io/badge/Sentence--BERT-all--MiniLM--L6--v2-FFB300)
+![Gemini](https://img.shields.io/badge/Gemini-optional-4285F4?logo=googlegemini&logoColor=white)
+![Offline capable](https://img.shields.io/badge/Offline-capable-2E7D32)
+
+---
+
+## Overview
+
+Shortlisting resumes by hand does not scale, and keyword filters fail in both
+directions: they reject strong candidates who phrase their experience differently,
+and they promote weak ones who simply list the right words. This project replaces
+that with a scoring pipeline that reads a resume the way a reviewer would — looking
+for *evidence* behind each claimed skill rather than the presence of a string.
+
+HR posts a job with its required skills, minimum experience and a deadline.
+Candidates register and apply with a PDF resume. The system extracts the text
+(with OCR fallback for scanned documents), scores every applicant across five
+weighted dimensions, and ranks them. Every score is explained: HR can open any
+candidate and see which required skills were found, the exact line of the resume
+that evidences each one, a confidence band, and how that candidate compares with
+the rest of the applicant pool. From there HR can accept or reject, schedule
+interviews, email candidates and export the shortlist as a PDF.
+
+The ranking runs entirely on the local machine using Sentence-BERT, so the system
+works with no internet connection and no API costs. Supplying a Gemini API key is
+optional and turns on a second pass in which the LLM assesses each required skill
+individually and returns a quoted justification. Resume text is PII-redacted — name,
+email, phone and profile links stripped — before any text leaves the machine.
+
+Because "it feels better" is not a result, ranking quality is measured rather than
+asserted. `eval/rank_eval.py` scores the system's ordering against hand-labelled
+ground truth using Spearman rank correlation, NDCG and top-K overlap; the numbers
+are in the *Accuracy* section below.
+
+### What makes it different from a keyword filter
+
+- **Evidence, not occurrence.** A skill counts when the resume shows it being used,
+  and the matching line is surfaced to the reviewer.
+- **Resistant to keyword stuffing.** In testing, a resume padded with unsupported
+  skill names ranked #2 under local scoring and #8 once LLM assessment was enabled.
+- **No truncation.** Long resumes are chunked with overlap, so Sentence-BERT's
+  256-token limit does not silently discard the second half of a CV.
+- **Explainable end to end.** Every ranking decision can be traced to a component
+  score and a quoted line, which matters for a hiring decision.
+- **Private by default.** Fully functional with no network access at all.
 
 ---
 
