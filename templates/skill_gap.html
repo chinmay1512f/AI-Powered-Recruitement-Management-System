@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skill Gap Analysis | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+        
+        .dashboard-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+        
+        .btn-outline {
+            background: #fff;
+            color: #64748b;
+            padding: 12px 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline:hover {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        
+        /* Candidate Info Card */
+        .candidate-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .candidate-info h2 {
+            font-size: 24px;
+            color: #1f293b;
+            margin-bottom: 8px;
+        }
+        
+        .candidate-info p {
+            color: #6b7280;
+            font-size: 15px;
+        }
+        
+        .match-score {
+            text-align: center;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .score-circle.high {
+            background: #dcfce7;
+            color: #166534;
+            border: 4px solid #22c55e;
+        }
+        
+        .score-circle.medium {
+            background: #fef3c7;
+            color: #92400e;
+            border: 4px solid #f59e0b;
+        }
+        
+        .score-circle.low {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 4px solid #ef4444;
+        }
+        
+        .score-circle span {
+            font-size: 36px;
+        }
+        
+        .score-circle small {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .metric-card i {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #3b82f6;
+        }
+        
+        .metric-card strong {
+            display: block;
+            font-size: 28px;
+            color: #1f293b;
+            margin-bottom: 4px;
+        }
+        
+        .metric-card span {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        /* Priority Breakdown */
+        .priority-breakdown {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .priority-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .priority-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .priority-important {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .priority-nice {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        
+        .stat-box.unsupported { background: #fff7ed; }
+        .stat-box.unsupported strong { color: #9a3412; }
+
+        .verdict {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 22px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .verdict.strong { background: #f0fdf4; border-left: 4px solid #22c55e; }
+        .verdict.promising { background: #eff6ff; border-left: 4px solid #3b82f6; }
+        .verdict.partial { background: #fffbeb; border-left: 4px solid #f59e0b; }
+        .verdict.weak { background: #fef2f2; border-left: 4px solid #ef4444; }
+
+        .verdict-icon { font-size: 26px; margin-top: 2px; }
+        .verdict.strong .verdict-icon { color: #16a34a; }
+        .verdict.promising .verdict-icon { color: #2563eb; }
+        .verdict.partial .verdict-icon { color: #d97706; }
+        .verdict.weak .verdict-icon { color: #dc2626; }
+
+        .verdict h4 { font-size: 17px; color: #1f293b; margin-bottom: 5px; }
+        .verdict p { font-size: 14px; color: #475569; line-height: 1.5; }
+
+        .facts { list-style: none; margin-bottom: 24px; }
+
+        .facts li {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .facts li:last-child { border-bottom: none; }
+        .facts li i { color: #64748b; margin-top: 3px; width: 16px; text-align: center; }
+        .facts li.warn { color: #9a3412; }
+        .facts li.warn i { color: #ea580c; }
+
+        .probe {
+            display: flex;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8fafc;
+            border-left: 3px solid #cbd5e1;
+        }
+
+        .probe.unsupported { border-left-color: #f97316; background: #fff7ed; }
+        .probe.partial { border-left-color: #f59e0b; background: #fffbeb; }
+        .probe.missing { border-left-color: #ef4444; background: #fef2f2; }
+
+        .probe-skill {
+            width: 132px;
+            flex-shrink: 0;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1f293b;
+        }
+
+        .probe-text { flex: 1; font-size: 13.5px; color: #475569; line-height: 1.55; }
+
+        .decision-note {
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+        }
+
+        .decision-note i { color: #94a3b8; margin-top: 2px; }
+
+        /* Confidence bands */
+        .band {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .band-strong { background: #dcfce7; color: #166534; }
+        .band-partial { background: #fef3c7; color: #92400e; }
+        .band-weak { background: #ffedd5; color: #9a3412; }
+        .band-absent { background: #fee2e2; color: #991b1b; }
+
+        .warn-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-left: 4px solid #f97316;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .warn-banner i { color: #ea580c; font-size: 22px; margin-top: 2px; }
+        .warn-banner h4 { color: #9a3412; margin-bottom: 4px; font-size: 15px; }
+        .warn-banner p { color: #7c2d12; font-size: 13.5px; line-height: 1.5; }
+
+        /* Pool comparison */
+        .pool-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .pool-card h3 {
+            font-size: 18px;
+            color: #1f293b;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pool-card .sub { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+
+        .pool-stats { display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; }
+        .pool-stats div { font-size: 13px; color: #6b7280; }
+        .pool-stats strong { display: block; font-size: 24px; color: #1f293b; margin-bottom: 2px; }
+
+        .rarity-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 0;
+            border-top: 1px solid #f1f5f9;
+            font-size: 13px;
+        }
+
+        .rarity-name { width: 130px; flex-shrink: 0; font-weight: 600; color: #374151; }
+        .rarity-note { color: #6b7280; }
+        .rarity-note.spec { color: #9a3412; font-weight: 500; }
+        .rarity-note.candidate { color: #991b1b; font-weight: 500; }
+
+        /* Strengths */
+        .strengths { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .strength-pill {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        /* Evidence */
+        .evidence-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid #3b82f6;
+        }
+
+        .evidence-card h3 {
+            font-size: 18px;
+            color: #1f293b;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .evidence-card .sub {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .ai-verdict {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 16px 18px;
+            font-size: 14px;
+            color: #1e3a5f;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .ev-line {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 13px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ev-line:last-child { border-bottom: none; }
+
+        .ev-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .ev-badge.found { background: #dcfce7; color: #166534; }
+        .ev-badge.absent { background: #fee2e2; color: #991b1b; }
+
+        .ev-body { flex: 1; }
+
+        .ev-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f293b;
+            margin-bottom: 4px;
+        }
+
+        .ev-text {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.55;
+            font-style: italic;
+        }
+
+        .ev-text.absent { font-style: normal; color: #991b1b; }
+
+        .no-evidence {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-card h3 {
+            font-size: 18px;
+            color: #1f293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Main Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .skill-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .skill-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .skill-card.matched h3 {
+            color: #166534;
+        }
+        
+        .skill-card.missing h3 {
+            color: #991b1b;
+        }
+        
+        .skill-card.matched {
+            border-top: 4px solid #22c55e;
+        }
+        
+        .skill-card.missing {
+            border-top: 4px solid #ef4444;
+        }
+        
+        /* Skill Items */
+        .skill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        
+        .skill-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .skill-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .skill-name i {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .matched .skill-name i {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .missing .skill-name i {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .skill-level {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .level-expert {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .level-intermediate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .level-beginner {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        
+        .level-missing {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Proficiency Bar */
+        .proficiency-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .proficiency-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .proficiency-fill.high {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+        
+        .proficiency-fill.medium {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+        
+        .proficiency-fill.low {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+        
+        /* Learning Path Section */
+        .learning-path-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .learning-path-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1f293b;
+        }
+        
+        .learning-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .learning-icon {
+            width: 40px;
+            height: 40px;
+            background: #eff6ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .learning-content h4 {
+            font-size: 15px;
+            color: #1f293b;
+            margin-bottom: 4px;
+        }
+        
+        .learning-content p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .learning-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .learning-meta span {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: white;
+            color: #64748b;
+        }
+        
+        
+        /* Alternative Skills */
+        .alternatives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .alternative-item {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .alternative-item h5 {
+            font-size: 14px;
+            color: #166534;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .alternative-item p {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        /* Analysis Summary */
+        .summary-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .summary-card h3 {
+            font-size: 18px;
+            color: #1f293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .stat-box.matched {
+            background: #f0fdf4;
+        }
+        
+        .stat-box.missing {
+            background: #fef2f2;
+        }
+        
+        .stat-box.partial {
+            background: #fffbeb;
+        }
+        
+        .stat-box strong {
+            display: block;
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+        
+        .stat-box.matched strong {
+            color: #166534;
+        }
+        
+        .stat-box.missing strong {
+            color: #991b1b;
+        }
+        
+        .stat-box.partial strong {
+            color: #92400e;
+        }
+        
+        .stat-box span {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        /* Recommendations */
+        .recommendations {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .recommendations h4 {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .recommendations ul {
+            list-style: none;
+        }
+        
+        .recommendations li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+        
+        .recommendations li:last-child {
+            border-bottom: none;
+        }
+        
+        .recommendations li i {
+            color: #f59e0b;
+            margin-top: 2px;
+        }
+        
+        /* Critical Gap Alert */
+        .critical-alert {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .critical-alert i {
+            font-size: 32px;
+            color: #dc2626;
+        }
+        
+        .critical-alert h4 {
+            color: #991b1b;
+            margin-bottom: 4px;
+        }
+        
+        .critical-alert p {
+            color: #7f1d1d;
+            font-size: 14px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            
+            .candidate-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div>
+            <h1>Advanced Skill Gap Analysis</h1>
+            <p>Comprehensive skill assessment with AI-powered recommendations</p>
+        </div>
+        <a href="/hr/sort/{{ job_id }}" class="btn-outline"><i class="fas fa-arrow-left"></i> Back to Results</a>
+    </header>
+
+    <!-- CANDIDATE INFO -->
+    <div class="candidate-card">
+        <div class="candidate-info">
+            <h2>{{ candidate_name }}</h2>
+            <p>Applied for: <strong>{{ job_title }}</strong> • Experience: {{ experience }} years</p>
+            <div class="priority-breakdown">
+                <span class="priority-badge priority-critical">{{ priority_breakdown.critical }} Critical Gaps</span>
+                <span class="priority-badge priority-important">{{ priority_breakdown.important }} Important</span>
+                <span class="priority-badge priority-nice">{{ priority_breakdown.nice_to_have }} Nice-to-Have</span>
+            </div>
+        </div>
+        <div class="match-score">
+            {% if match_percentage >= 70 %}
+            <div class="score-circle high">
+            {% elif match_percentage >= 40 %}
+            <div class="score-circle medium">
+            {% else %}
+            <div class="score-circle low">
+            {% endif %}
+                <span>{{ match_percentage }}%</span>
+                <small>Match</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLAIMED BUT UNSUPPORTED -->
+    {% if weak_claims %}
+    <div class="warn-banner">
+        <i class="fas fa-circle-exclamation"></i>
+        <div>
+            <h4>{{ weak_claims|length }} skill(s) listed without supporting evidence</h4>
+            <p>
+                {{ weak_claims|map(attribute='name')|join(', ') }} appear in this resume,
+                but nothing in the experience, projects or coursework backs them up.
+                Keyword-based screening would have counted these as full matches.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- CRITICAL ALERT -->
+    {% if critical_gaps %}
+    <div class="critical-alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+            <h4>Critical Skill Gaps Detected</h4>
+            <p>This candidate is missing {{ critical_gaps|length }} critical skill(s) required for the role: {{ critical_gaps|map(attribute='name')|join(', ') }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- METRICS GRID -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <i class="fas fa-clock"></i>
+            <strong>{{ total_learning_time.days }}</strong>
+            <span>Days to Upskill{% if total_learning_time.is_rough %} <em style="color:#9ca3af;">(rough)</em>{% endif %}</span>
+            {% if total_learning_time.is_rough %}
+            <div style="font-size:11px;color:#9ca3af;margin-top:6px;">
+                {{ total_learning_time.estimated }} of {{ total_learning_time.total }} use a default estimate
+            </div>
+            {% endif %}
+        </div>
+        <div class="metric-card">
+            <i class="fas fa-check-circle"></i>
+            <strong>{{ matched_skills|length }}</strong>
+            <span>Skills Matched</span>
+        </div>
+        <div class="metric-card">
+            <i class="fas fa-times-circle"></i>
+            <strong>{{ missing_skills|length }}</strong>
+            <span>Skills Missing</span>
+        </div>
+    </div>
+
+    <!-- POOL COMPARISON -->
+    {% if pool %}
+    <div class="pool-card">
+        <h3><i class="fas fa-users"></i> Compared with the other applicants</h3>
+        <div class="sub">A gap everyone shares points at the job spec, not the candidate</div>
+
+        <div class="pool-stats">
+            <div><strong>#{{ pool.rank }}</strong>of {{ pool.total }} applicants</div>
+            <div><strong>{{ match_percentage }}%</strong>skill match</div>
+            <div><strong>{{ pool.pool_average }}%</strong>pool average score</div>
+        </div>
+
+        {% for gap in skill_gaps_detailed %}
+            {% set info = pool.rarity.get(gap.name.lower()) %}
+            {% if info %}
+            <div class="rarity-row">
+                <div class="rarity-name">{{ gap.name }}</div>
+                {% if info.common %}
+                <div class="rarity-note spec">
+                    <i class="fas fa-circle-info"></i>
+                    {{ info.lacking }} of {{ info.total }} applicants also lack this - the requirement may be unrealistic
+                </div>
+                {% else %}
+                <div class="rarity-note candidate">
+                    <i class="fas fa-user-xmark"></i>
+                    Only {{ info.lacking }} of {{ info.total }} applicants lack this - a genuine gap for this candidate
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- EVIDENCE -->
+    <div class="evidence-card">
+        <h3><i class="fas fa-quote-left"></i> Why the AI scored it this way</h3>
+        <div class="sub">
+            Quoted from the resume, per required skill. Assessed by {{ assessed_by }}.
+        </div>
+
+        {% if ai_summary %}
+        <div class="ai-verdict">{{ ai_summary }}</div>
+        {% endif %}
+
+        {% if evidence %}
+            {% for skill, quote in evidence.items() %}
+            <div class="ev-line">
+                <div class="ev-badge found"><i class="fas fa-check"></i></div>
+                <div class="ev-body">
+                    <div class="ev-title">{{ skill.title() }}</div>
+                    <div class="ev-text">"{{ quote }}"</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% for gap in skill_gaps_detailed %}
+            {% if gap.name.lower() not in evidence %}
+            <div class="ev-line">
+                <div class="ev-badge absent"><i class="fas fa-xmark"></i></div>
+                <div class="ev-body">
+                    <div class="ev-title">{{ gap.name }}</div>
+                    <div class="ev-text absent">Nothing in the resume demonstrates this.</div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if not evidence and not ai_summary %}
+        <div class="no-evidence">
+            No per-skill evidence was recorded for this candidate. Evidence comes from
+            LLM extraction - set <code>GEMINI_API_KEY</code> in <code>.env</code> and
+            re-run AI Sort to capture it.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="charts-section">
+        <!-- Bar Chart: Skill Proficiency Levels -->
+        <div class="chart-card">
+            <h3><i class="fas fa-chart-bar"></i> Skill Proficiency Analysis</h3>
+            <div class="chart-container">
+                <canvas id="proficiencyChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Required-skill coverage -->
+        <div class="chart-card">
+            <h3><i class="fas fa-bullseye"></i> Required Skill Coverage</h3>
+            <div class="chart-container">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+        <!-- Matched Skills -->
+        <div class="skill-card matched">
+            <h3>
+                <i class="fas fa-check-circle"></i>
+                Skill Evidence ({{ matched_skills|length }} demonstrated, {{ partial_matches_detail|length }} partial)
+            </h3>
+            {% if matched_skills or partial_matches_detail %}
+                {% for skill in matched_skills + partial_matches_detail %}
+                <div class="skill-item">
+                    <div style="flex: 1;">
+                        <div class="skill-name">
+                            <i class="fas fa-check"></i>
+                            {{ skill.name }}
+                        </div>
+                        <div class="proficiency-bar">
+                            {% if skill.proficiency_score >= 70 %}
+                            <div class="proficiency-fill high" data-width="{{ skill.proficiency_score }}"></div>
+                            {% elif skill.proficiency_score >= 40 %}
+                            <div class="proficiency-fill medium" data-width="{{ skill.proficiency_score }}"></div>
+                            {% else %}
+                            <div class="proficiency-fill low" data-width="{{ skill.proficiency_score }}"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="band band-{{ skill.band }}">{{ skill.band_label }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #6b7280; text-align: center; padding: 20px;">No matched skills found</p>
+            {% endif %}
+        </div>
+
+        <!-- Missing Skills with Details -->
+        <div class="skill-card missing">
+            <h3>
+                <i class="fas fa-times-circle"></i>
+                Skill Gaps ({{ skill_gaps_detailed|length }})
+            </h3>
+            {% if skill_gaps_detailed %}
+                {% for gap in skill_gaps_detailed %}
+                <div class="skill-item">
+                    <div style="flex: 1;">
+                        <div class="skill-name">
+                            <i class="fas fa-times"></i>
+                            {{ gap.name }}
+                            <span class="priority-badge priority-{{ gap.priority }}">{{ gap.priority }}</span>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 6px; font-size: 12px; color: #6b7280;">
+                            <span><i class="fas fa-clock"></i> {{ gap.learning_time.intermediate }}h to learn</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #6b7280; text-align: center; padding: 20px;">No missing skills - perfect match!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- LEARNING PATH RECOMMENDATIONS -->
+    {% if skill_gaps_detailed %}
+    <div class="learning-path-card">
+        <h3><i class="fas fa-graduation-cap"></i> Recommended Learning Path</h3>
+        {% for gap in skill_gaps_detailed[:3] %}
+        <div class="learning-item">
+            <div class="learning-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="learning-content">
+                <h4>{{ gap.name }}</h4>
+                <p>Priority: {{ gap.priority.title() }}</p>
+                <div class="learning-meta">
+                    {% if gap.learning_path %}
+                        {% for level, resources in gap.learning_path.items() %}
+                            <span><i class="fas fa-star"></i> {{ level.title() }}: {{ resources[0] if resources else 'TBD' }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    <span><i class="fas fa-clock"></i> {{ gap.learning_time.beginner }}h beginner</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ALTERNATIVE SKILLS -->
+    {% if skill_gaps_detailed %}
+    <div class="learning-path-card">
+        <h3><i class="fas fa-exchange-alt"></i> Transferable Skill Alternatives</h3>
+        <div class="alternatives-grid">
+            {% for gap in skill_gaps_detailed %}
+                {% if gap.alternatives %}
+                <div class="alternative-item">
+                    <h5><i class="fas fa-lightbulb"></i> Instead of {{ gap.name }}</h5>
+                    <p>Consider: {{ gap.alternatives|join(', ') }}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- STRENGTHS BEYOND THE BRIEF -->
+    {% if extra_skills %}
+    <div class="learning-path-card">
+        <h3><i class="fas fa-plus-circle"></i> Brings beyond the requirements</h3>
+        <p style="font-size:13px;color:#6b7280;margin:-12px 0 16px;">
+            Demonstrated in the resume but not asked for in this job posting.
+        </p>
+        <div class="strengths">
+            {% for skill in extra_skills %}
+            <span class="strength-pill">{{ skill }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ANALYSIS SUMMARY -->
+    <div class="summary-card">
+        <h3>
+            <i class="fas fa-chart-pie"></i>
+            Screening Summary
+        </h3>
+
+        <div class="summary-stats">
+            <div class="stat-box matched">
+                <strong>{{ screening.counts.demonstrated }}</strong>
+                <span>Demonstrated</span>
+            </div>
+            <div class="stat-box partial">
+                <strong>{{ screening.counts.partial }}</strong>
+                <span>Partial Evidence</span>
+            </div>
+            <div class="stat-box unsupported">
+                <strong>{{ screening.counts.unsupported }}</strong>
+                <span>Claimed, Unsupported</span>
+            </div>
+            <div class="stat-box missing">
+                <strong>{{ screening.counts.missing }}</strong>
+                <span>Not Found</span>
+            </div>
+        </div>
+
+        <div class="verdict {{ screening.level }}">
+            <i class="verdict-icon fas fa-{{ 'circle-check' if screening.level == 'strong'
+                else ('thumbs-up' if screening.level == 'promising'
+                else ('circle-exclamation' if screening.level == 'partial' else 'circle-xmark')) }}"></i>
+            <div>
+                <h4>{{ screening.title }}</h4>
+                <p>{{ screening.blurb }}</p>
+            </div>
+        </div>
+
+        <div class="recommendations">
+            <h4>What the screening found</h4>
+            <ul class="facts">
+                {% for fact in screening.facts %}
+                <li class="{{ 'warn' if fact.warn }}">
+                    <i class="fas fa-{{ fact.icon }}"></i> {{ fact.text }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            {% if screening.probes %}
+            <h4>What to probe in the interview</h4>
+            {% for probe in screening.probes %}
+            <div class="probe {{ probe.kind }}">
+                <div class="probe-skill">{{ probe.skill }}</div>
+                <div class="probe-text">{{ probe.text }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="font-size:14px;color:#166534;padding:8px 0;">
+                Every required skill is directly evidenced - no follow-up questions flagged.
+            </p>
+            {% endif %}
+
+            <div class="decision-note">
+                <i class="fas fa-circle-info"></i>
+                <span>
+                    This is a screening aid based only on the resume. It does not account for
+                    the interview, references, or team fit, and it does not make the hiring
+                    decision - that stays with you.
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Hidden JSON data for JavaScript -->
+<script id="chart-data" type="application/json">
+{{ {'matched_skills': matched_skills, 'missing_skills': missing_skills, 'partial_matches': partial_matches, 'skill_gaps_detailed': skill_gaps_detailed}|tojson|safe }}
+</script>
+
+<!-- JavaScript for Charts and Proficiency Bars -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set proficiency bar widths
+        var fills = document.querySelectorAll('.proficiency-fill');
+        fills.forEach(function(fill) {
+            var width = fill.getAttribute('data-width');
+            if (width) {
+                fill.style.width = width + '%';
+            }
+        });
+
+        // Get data from the JSON script tag
+        const chartDataElement = document.getElementById('chart-data');
+        const chartData = JSON.parse(chartDataElement.textContent);
+
+        const matchedSkills = chartData.matched_skills;
+        const missingSkills = chartData.missing_skills;
+        const partialMatches = chartData.partial_matches;
+        const skillGapsDetailed = chartData.skill_gaps_detailed;
+
+        // Bar Chart: Skill Proficiency Levels (VERTICAL with BLUE colors)
+        const proficiencyCtx = document.getElementById('proficiencyChart').getContext('2d');
+        
+        // Prepare data for matched skills
+        const skillNames = matchedSkills.map(function(s) { return s.name; });
+        const proficiencyScores = matchedSkills.map(function(s) { return s.proficiency_score || 0; });
+
+        // Add missing skills with 0 proficiency
+        const missingNames = skillGapsDetailed.map(function(s) { return s.name; });
+        const allSkillNames = skillNames.concat(missingNames);
+        const allProficiencyScores = proficiencyScores.concat(missingNames.map(function() { return 0; }));
+        
+        // Colour by match status. A single uniform blue made a matched skill and
+        // a missing one look identical, which is the only thing this chart is for.
+        const barColors = skillNames.map(function () { return '#2563eb'; })
+            .concat(missingNames.map(function () { return '#ef4444'; }));
+        const barBorders = skillNames.map(function () { return '#1e40af'; })
+            .concat(missingNames.map(function () { return '#b91c1c'; }));
+
+        new Chart(proficiencyCtx, {
+            type: 'bar',
+            data: {
+                labels: allSkillNames,
+                datasets: [{
+                    label: 'Proficiency Score',
+                    data: allProficiencyScores,
+                    backgroundColor: barColors,
+                    borderColor: barBorders,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'x',  // VERTICAL bars (default)
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const score = context.raw;
+                                if (score === 0) return 'Missing Skill (0%)';
+                                if (score >= 70) return 'Expert Level: ' + score + '%';
+                                if (score >= 40) return 'Intermediate Level: ' + score + '%';
+                                return 'Beginner Level: ' + score + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: '#64748b'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Proficiency (%)',
+                            color: '#374151',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#374151',
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Skills',
+                            color: '#374151',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Pie Chart: Skills Distribution (BLUE theme)
+        const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+        
+        const matchedCount = matchedSkills.filter(function(s) { return s.confidence >= 70; }).length;
+        const partialCount = partialMatches.length + matchedSkills.filter(function(s) { return s.confidence < 70 && s.confidence >= 50; }).length;
+        const missingCount = missingSkills.length;
+
+        // A doughnut of matched/partial/missing repeated the three stat boxes
+        // directly below it. This shows coverage per required skill instead,
+        // which is the thing a recruiter is actually deciding on.
+        const coverageNames = matchedSkills.map(function (s) { return s.name; })
+            .concat(partialMatches.map(function (s) { return s.name; }))
+            .concat(skillGapsDetailed.map(function (s) { return s.name; }));
+        const coverageValues = matchedSkills.map(function (s) { return s.confidence || 100; })
+            .concat(partialMatches.map(function (s) { return s.confidence || 50; }))
+            .concat(skillGapsDetailed.map(function () { return 0; }));
+        const coverageColors = matchedSkills.map(function () { return '#16a34a'; })
+            .concat(partialMatches.map(function () { return '#f59e0b'; }))
+            .concat(skillGapsDetailed.map(function () { return '#ef4444'; }));
+
+        new Chart(distributionCtx, {
+            type: 'bar',
+            data: {
+                labels: coverageNames,
+                datasets: [{
+                    label: 'Coverage',
+                    data: coverageValues,
+                    backgroundColor: coverageColors,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const value = context.raw;
+                                if (value === 0) return 'Missing - no evidence found';
+                                if (value >= 80) return 'Direct match: ' + value + '% confidence';
+                                return 'Partial / related evidence: ' + value + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#e2e8f0' },
+                        ticks: {
+                            callback: function (v) { return v + '%'; },
+                            color: '#64748b'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Evidence strength',
+                            color: '#374151',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#374151', font: { size: 11, weight: '500' } }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

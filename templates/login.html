@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR Portal | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #fafafa;
+            color: #1a1a1a;
+        }
+
+        /* Left Panel - Subtle Branding */
+        .brand-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e8ecf1 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-content {
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            background: #1e3a5f;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.15);
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e3a5f;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-headline {
+            font-size: 42px;
+            font-weight: 300;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-headline strong {
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+
+        .brand-description {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #64748b;
+            margin-bottom: 48px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 15px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Right Panel - Login Form */
+        .login-panel {
+            flex: 0 0 520px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: white;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #3b82f6;
+            margin-bottom: 12px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-description {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 400;
+            color: #1a1a1a;
+            background: #fafafa;
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .form-input:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+        }
+
+        .form-input:focus + i,
+        .input-wrapper:focus-within i {
+            color: #3b82f6;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 5px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #4b5563;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login:hover {
+            background: #152a45;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-login.loading .btn-text,
+        .btn-login.loading i {
+            opacity: 0;
+        }
+
+        .btn-login.loading .btn-loader {
+            display: block;
+            position: absolute;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 32px 0;
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        .security-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #166534;
+            font-weight: 500;
+            border: 1px solid #bbf7d0;
+        }
+
+        .security-notice i {
+            color: #22c55e;
+        }
+
+        .flash-messages {
+            margin-bottom: 24px;
+        }
+
+        .flash-error {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #fecaca;
+            font-weight: 500;
+        }
+
+        .flash-error i {
+            color: #ef4444;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .brand-panel {
+                display: none;
+            }
+            
+            .login-panel {
+                flex: 1;
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-panel {
+                padding: 32px 24px;
+            }
+            
+            .login-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Panel - Branding -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <div class="brand-header">
+                <div class="brand-logo">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="brand-title">Resume Intelligence</div>
+            </div>
+            
+            <h1 class="brand-headline">
+                Streamline your <strong>hiring workflow</strong>
+            </h1>
+            
+            <p class="brand-description">
+                Intelligent candidate screening and ranking powered by semantic analysis. 
+                Make data-driven recruitment decisions with confidence.
+            </p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span>AI-powered semantic matching</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <span>Automated candidate ranking</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <span>Enterprise-grade security</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel - Login Form -->
+    <div class="login-panel">
+        <div class="login-card">
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    <div class="flash-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ messages[0] }}
+                    </div>
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="login-header">
+                <div class="login-subtitle">HR Access</div>
+                <h2 class="login-title">Welcome back</h2>
+                <p class="login-description">Sign in to access your recruitment dashboard</p>
+            </div>
+
+            <form method="post" onsubmit="handleLogin(this)">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" class="form-input" placeholder="Enter your username" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" checked>
+                        <span class="checkbox-label">Keep me signed in</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <span class="btn-text">Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="btn-loader"></span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Secure Connection</span>
+            </div>
+
+            <div class="security-notice">
+                <i class="fas fa-lock"></i>
+                <span>256-bit SSL encryption enabled</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(form) {
+            const btn = form.querySelector(".btn-login");
+            btn.classList.add("loading");
+        }
+    </script>
+
+</body>
+</html>

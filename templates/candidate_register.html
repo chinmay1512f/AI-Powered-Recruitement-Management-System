@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #fafafa;
+            color: #1a1a1a;
+        }
+
+        /* ---------- Left: branding ---------- */
+        .brand-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px;
+            background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-content { max-width: 460px; position: relative; z-index: 1; }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 44px;
+        }
+
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            background: #0ea5e9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.2);
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0369a1;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-headline {
+            font-size: 40px;
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-headline strong { font-weight: 600; color: #0284c7; }
+
+        .brand-description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #64748b;
+            margin-bottom: 44px;
+        }
+
+        .steps { display: flex; flex-direction: column; gap: 22px; }
+
+        .step { display: flex; align-items: flex-start; gap: 16px; }
+
+        .step-num {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: white;
+            color: #0ea5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid #e0f2fe;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .step-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 3px;
+        }
+
+        .step-text p { font-size: 14px; color: #64748b; line-height: 1.5; }
+
+        /* ---------- Right: form ---------- */
+        .form-panel {
+            flex: 0 0 560px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 60px;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .form-card { width: 100%; max-width: 420px; }
+
+        .form-header { margin-bottom: 28px; }
+
+        .form-eyebrow {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #0ea5e9;
+            margin-bottom: 10px;
+        }
+
+        .form-header h1 {
+            font-size: 27px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p { font-size: 15px; color: #64748b; line-height: 1.5; }
+
+        .flash-messages { margin-bottom: 22px; }
+
+        .flash-error {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 13px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #fecaca;
+            font-weight: 500;
+        }
+
+        .flash-error i { color: #ef4444; }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field { margin-bottom: 18px; }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper { position: relative; }
+
+        .input-wrapper > i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 15px;
+            transition: color 0.2s;
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 13px 15px 13px 44px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            color: #1a1a1a;
+            background: #fafafa;
+            transition: all 0.2s ease;
+        }
+
+        .input-wrapper input::placeholder { color: #b6bcc6; }
+
+        .input-wrapper input:hover { border-color: #d1d5db; background: #f9fafb; }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.08);
+        }
+
+        .input-wrapper:focus-within > i { color: #0ea5e9; }
+
+        .hint {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 16px;
+        }
+
+        .hint.ok { color: #16a34a; }
+        .hint.bad { color: #dc2626; }
+
+        .input-wrapper input.mismatch {
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            margin-top: 6px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0 18px;
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span { padding: 0 14px; }
+
+        .login-prompt {
+            text-align: center;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .login-prompt a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .login-prompt a:hover { color: #0369a1; text-decoration: underline; }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-link:hover { color: #6b7280; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 1100px) {
+            .brand-panel { display: none; }
+            .form-panel { flex: 1; padding: 48px 32px; }
+        }
+
+        @media (max-width: 520px) {
+            .form-panel { padding: 32px 22px; }
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+            .form-header h1 { font-size: 23px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left: branding -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <div class="brand-header">
+                <div class="brand-logo"><i class="fas fa-user-graduate"></i></div>
+                <div class="brand-title">Candidate Portal</div>
+            </div>
+
+            <h1 class="brand-headline">
+                Start your <strong>application journey</strong>
+            </h1>
+
+            <p class="brand-description">
+                One account gives you access to every open role, with AI-matched
+                results and real-time updates on where you stand.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <h4>Create your account</h4>
+                        <p>Takes less than a minute.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <h4>Apply with your resume</h4>
+                        <p>PDF, DOCX or a scanned copy - all supported.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <h4>Track your match score</h4>
+                        <p>See how your skills line up against each role.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: form -->
+    <div class="form-panel">
+        <div class="form-card">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                    <div class="flash-error">
+                        <i class="fas fa-circle-exclamation"></i> {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-header">
+                <div class="form-eyebrow">Candidate Sign-up</div>
+                <h1>Create your account</h1>
+                <p>Register once, then apply to any open position.</p>
+            </div>
+
+            <form method="post" id="registerForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="name" name="name" placeholder="Your full name"
+                               required autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" id="phone" name="phone" placeholder="10-digit number"
+                                   required autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="username" name="username" placeholder="Choose one"
+                                   required autocomplete="username">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="you@example.com"
+                               required autocomplete="email">
+                    </div>
+                    <div class="hint">Decisions and interview invites are sent here.</div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password"
+                               placeholder="Create a password" required autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="confirm_password">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm_password" name="confirm_password"
+                               placeholder="Re-enter your password" required autocomplete="new-password">
+                    </div>
+                    <div class="hint" id="matchHint"></div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <div class="login-prompt">
+                Already registered?<a href="/candidate-login">Sign in</a>
+            </div>
+
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to home
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // Tell the candidate the passwords do not match before the round trip,
+        // rather than sending them back to a re-emptied form.
+        var pw = document.getElementById('password');
+        var confirmPw = document.getElementById('confirm_password');
+        var hint = document.getElementById('matchHint');
+
+        function checkMatch() {
+            if (!confirmPw.value) {
+                hint.textContent = '';
+                hint.className = 'hint';
+                confirmPw.classList.remove('mismatch');
+                return true;
+            }
+            var same = pw.value === confirmPw.value;
+            hint.innerHTML = same
+                ? '<i class="fas fa-circle-check"></i> Passwords match'
+                : '<i class="fas fa-circle-xmark"></i> Passwords do not match';
+            hint.className = same ? 'hint ok' : 'hint bad';
+            confirmPw.classList.toggle('mismatch', !same);
+            return same;
+        }
+
+        pw.addEventListener('input', checkMatch);
+        confirmPw.addEventListener('input', checkMatch);
+
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            if (!checkMatch()) {
+                e.preventDefault();
+                confirmPw.focus();
+            }
+        });
+    </script>
+
+</body>
+</html>

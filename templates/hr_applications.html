@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Applications | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .dashboard-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dashboard-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .dashboard-header p { color: #64748b; font-size: 15px; }
+
+        .btn-logout {
+            background: #fff;
+            color: #64748b;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-logout:hover { background: #f1f5f9; color: #334155; }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            border-bottom: 1px solid #e2e8f0;
+            gap: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .card-header p { font-size: 14px; color: #64748b; }
+
+        .count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .modern-table thead { background: #f8fafc; }
+
+        .modern-table th {
+            padding: 16px 28px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-table td {
+            padding: 18px 28px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .modern-table tr:hover { background: #f8fafc; }
+        .modern-table tr:last-child td { border-bottom: none; }
+
+        .row-index { color: #94a3b8; font-weight: 600; }
+
+        .candidate-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .candidate-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .btn-view {
+            background: #eff6ff;
+            color: #3b82f6;
+            padding: 9px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+
+        .btn-view:hover { background: #3b82f6; color: #fff; }
+
+        .date-cell { color: #64748b; }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 28px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            gap: 20px;
+        }
+
+        .footer-note {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-note i { color: #10b981; }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 13px 26px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            white-space: nowrap;
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-ai.disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 28px;
+            color: #64748b;
+        }
+
+        .empty i {
+            font-size: 40px;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty h3 {
+            font-size: 17px;
+            color: #334155;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .empty p { font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .dashboard-wrapper { padding: 20px; }
+            .dashboard-header, .card-header, .card-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .modern-table th, .modern-table td { padding: 14px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Applications</h1>
+            <p>{{ job.job_title }} &bull; review candidates before AI ranking</p>
+        </div>
+        <a href="/hr-dashboard" class="btn-logout">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </header>
+
+    <section class="card">
+        <div class="card-header">
+            <div>
+                <h2>Received Applications</h2>
+                <p>Every candidate who has applied to this opening</p>
+            </div>
+            <span class="count-pill">
+                <i class="fas fa-users"></i> {{ applications|length }} applicant{{ '' if applications|length == 1 else 's' }}
+            </span>
+        </div>
+
+        {% if applications %}
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">#</th>
+                    <th>Candidate</th>
+                    <th>Resume</th>
+                    <th>Applied On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in applications %}
+                <tr>
+                    <td class="row-index">{{ loop.index }}</td>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="avatar">{{ a.candidate_name[0]|upper }}</div>
+                            <span class="candidate-name">{{ a.candidate_name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <a class="btn-view" href="/view_resume/{{ a.resume_file }}" target="_blank">
+                            <i class="fas fa-file-pdf"></i> View Resume
+                        </a>
+                    </td>
+                    <td class="date-cell">
+                        <i class="far fa-calendar" style="margin-right: 7px; color: #94a3b8;"></i>
+                        {{ a.applied_at.strftime("%d %b %Y") }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <i class="far fa-folder-open"></i>
+            <h3>No applications yet</h3>
+            <p>Candidates who apply to this opening will appear here.</p>
+        </div>
+        {% endif %}
+
+        <div class="card-footer">
+            <div class="footer-note">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                The AI assesses each required skill, experience and education against every resume
+            </div>
+            <a href="/hr/sort/{{ job.id }}"
+               class="btn-ai {% if not applications %}disabled{% endif %}">
+                <i class="fas fa-magic"></i> Sort Resumes with AI
+            </a>
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

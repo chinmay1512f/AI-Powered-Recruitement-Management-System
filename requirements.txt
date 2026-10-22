@@ -1,0 +1,23 @@
+# Web
+flask
+flask_sqlalchemy
+werkzeug
+flask-mail
+gunicorn
+
+# Resume parsing
+PyMuPDF
+python-docx
+pytesseract
+Pillow
+
+# Local (offline) scoring
+scikit-learn
+numpy
+scipy
+sentence-transformers
+torch
+
+# LLM extraction (optional - the app runs fully offline without either)
+google-genai      # Gemini, has a free tier
+anthropic         # Claude, alternative provider

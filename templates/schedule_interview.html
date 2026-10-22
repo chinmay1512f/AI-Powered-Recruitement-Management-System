@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Interview | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .dashboard-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 24px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+            color: #1f3a5f;
+            margin-bottom: 6px;
+        }
+
+        .dashboard-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .btn-outline {
+            padding: 10px 20px;
+            border: 2px solid #e5e7eb;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .candidate-info {
+            background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 28px;
+        }
+
+        .candidate-info h3 {
+            color: #166534;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .candidate-info p {
+            color: #166534;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .existing-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Schedule Interview</h1>
+            <p>Set up interview details for accepted candidate</p>
+        </div>
+        <a href="/hr/sort/{{ job.id }}" class="btn-outline">← Back to Results</a>
+    </header>
+
+    <div class="card">
+
+        {% if existing_interview %}
+        <div class="existing-badge">
+            <i class="fas fa-calendar-check"></i> Rescheduling Existing Interview
+        </div>
+        {% endif %}
+
+        <div class="candidate-info">
+            <h3><i class="fas fa-user-check"></i> {{ candidate.name }}</h3>
+            <p><i class="fas fa-envelope"></i> {{ candidate.email }}</p>
+            <p><i class="fas fa-briefcase"></i> Position: {{ job.job_title }}</p>
+        </div>
+
+        <form method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="interview_date">Interview Date & Time *</label>
+                    <input type="datetime-local" 
+                           id="interview_date" 
+                           name="interview_date" 
+                           value="{{ default_date }}"
+                           required>
+                    <div class="hint">Select date and time for the interview</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="interview_type">Interview Type *</label>
+                    <select id="interview_type" name="interview_type" required>
+                        <option value="Video Call" {% if existing_interview and existing_interview.interview_type == 'Video Call' %}selected{% endif %}>Video Call</option>
+                        <option value="Phone Call" {% if existing_interview and existing_interview.interview_type == 'Phone Call' %}selected{% endif %}>Phone Call</option>
+                        <option value="In-Person" {% if existing_interview and existing_interview.interview_type == 'In-Person' %}selected{% endif %}>In-Person</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="interview_link">Meeting Link (for Video/Phone)</label>
+                <input type="url" 
+                       id="interview_link" 
+                       name="interview_link" 
+                       placeholder="https://meet.google.com/... or https://zoom.us/j/..."
+                       value="{{ existing_interview.interview_link if existing_interview else '' }}">
+                <div class="hint">Paste Google Meet, Zoom, Teams, or any meeting URL</div>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location (for In-Person)</label>
+                <input type="text" 
+                       id="location" 
+                       name="location" 
+                       placeholder="Office address or meeting room"
+                       value="{{ existing_interview.location if existing_interview else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Additional Notes</label>
+                <textarea id="notes" 
+                          name="notes" 
+                          placeholder="Any special instructions, preparation materials, or things the candidate should bring...">{{ existing_interview.notes if existing_interview else '' }}</textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-calendar-plus"></i>
+                {{ 'Update Interview' if existing_interview else 'Schedule Interview & Send Email' }}
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

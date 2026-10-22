@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate Dashboard | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            color: #1f2937;
+            min-height: 100vh;
+        }
+        
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 24px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .top-title h2 {
+            font-size: 28px;
+            color: #1f3a5f;
+            margin-bottom: 6px;
+        }
+        
+        .top-title span {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .btn-secondary {
+            padding: 12px 24px;
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .applications-table th {
+            text-align: left;
+            padding: 16px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .applications-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .applications-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .applications-table tr.withdrawn {
+            background: #f9fafb;
+            opacity: 0.7;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .status-accepted {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-withdrawn {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .status-not-evaluated {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .btn-withdraw {
+            padding: 8px 16px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-withdraw:hover {
+            background: #fee2e2;
+            transform: translateY(-1px);
+        }
+        
+        .btn-withdraw:disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            border-color: #e5e7eb;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .withdrawn-text {
+            font-size: 13px;
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        
+        .job-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #2563eb;
+        }
+        
+        .job-card h4 {
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        
+        .job-card p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .job-card strong {
+            color: #374151;
+        }
+        
+        .deadline-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        
+        .deadline-info.urgent {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .already-applied {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #f3f4f6;
+            color: #6b7280;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .notification-banner {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left: 4px solid #2563eb;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            background: #fef2f2;
+            color: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            color: #1f293b;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-modal-cancel {
+            padding: 12px 24px;
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-modal-confirm {
+            padding: 12px 24px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-confirm:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <div class="top-bar">
+        <div class="top-title">
+            <h2>Welcome, {{ session.candidate_name }} 👋</h2>
+            <span>Track your applications & discover new opportunities</span>
+        </div>
+        <a href="/logout" class="btn-secondary">Logout</a>
+    </div>
+
+    <div class="notification-banner">
+        💡 <strong>Tip:</strong> You can withdraw applications that are still under review. Once a decision is made, withdrawal is no longer possible.
+    </div>
+
+    <section class="content-card">
+        <h3 class="section-title">📋 My Applications</h3>
+
+        {% if applications %}
+        <table class="applications-table">
+            <thead>
+                <tr>
+                    <th>Job Position</th>
+                    <th>AI Match Score</th>
+                    <th>Current Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr class="{% if app.withdrawn_at %}withdrawn{% endif %}">
+                    <td>
+                        <strong style="color: #1e293b; font-size: 15px;">{{ app.job_title }}</strong>
+                        {% if app.withdrawn_at %}
+                            <br><small style="color: #9ca3af;">Withdrawn on {{ app.withdrawn_at.strftime('%d %b %Y') }}</small>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if app.withdrawn_at %}
+                            <span class="status-badge status-withdrawn">—</span>
+                        {% elif app.score %}
+                            <span class="score-badge">{{ app.score }}%</span>
+                        {% else %}
+                            <span class="status-badge status-not-evaluated">Not Evaluated</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if app.withdrawn_at %}
+                            <span class="status-badge status-withdrawn">
+                                ✕ Withdrawn
+                            </span>
+                        {% elif app.status == 'Accepted' %}
+                            <span class="status-badge status-accepted">
+                                ✓ Accepted
+                            </span>
+                        {% elif app.status == 'Rejected' %}
+                            <span class="status-badge status-rejected">
+                                ✕ Not Selected
+                            </span>
+                        {% elif app.status == 'Pending' %}
+                            <span class="status-badge status-pending">
+                                ⏳ Under Review
+                            </span>
+                        {% else %}
+                            <span class="status-badge status-not-evaluated">
+                                ⏳ Submitted
+                            </span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if app.withdrawn_at %}
+                            <span class="withdrawn-text">Application withdrawn</span>
+                        {% elif app.status in ['Accepted', 'Rejected'] %}
+                            <button class="btn-withdraw" disabled>
+                                Decision finalized
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn-withdraw" data-app-id="{{ app.id }}" data-job-title="{{ app.job_title }}">
+                                <i class="fas fa-times-circle"></i> Withdraw
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div class="empty">
+                <p>You haven't applied for any jobs yet.</p>
+                <p style="margin-top: 8px; font-size: 14px;">Browse available positions below!</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="content-card">
+        <h3 class="section-title">🚀 Available Jobs</h3>
+
+        <div class="job-grid">
+            {% for job in jobs %}
+            <div class="job-card">
+                <h4>{{ job.job_title }}</h4>
+
+                <p><strong>Required Skills:</strong><br>
+                {{ job.required_skills }}</p>
+
+                <p><strong>Experience Required:</strong> {{ job.min_experience }} years</p>
+                
+                {% if job.deadline %}
+                    {% set days_left = (job.deadline - today).days %}
+                    <div class="deadline-info {% if days_left <= 3 %}urgent{% endif %}">
+                        <span>⏰ Deadline: {{ job.deadline.strftime('%d %b %Y') }}</span>
+                        {% if days_left > 0 %}
+                            <span>({{ days_left }} days left)</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if job.already_applied %}
+                    <span class="already-applied">
+                        <i class="fas fa-check"></i> Already Applied
+                    </span>
+                {% else %}
+                    <a href="/apply/{{ job.id }}" class="btn-primary">
+                        Apply Now →
+                    </a>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="empty" style="grid-column: 1 / -1;">
+                <p>No jobs available at the moment. Check back later!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <div class="modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3>Withdraw Application?</h3>
+        <p>Are you sure you want to withdraw your application for <strong id="jobTitle">this position</strong>? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+            <form id="withdrawForm" method="post" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-modal-confirm">Yes, Withdraw</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use event delegation to handle all withdraw buttons
+    document.querySelectorAll('.btn-withdraw[data-app-id]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var appId = this.getAttribute('data-app-id');
+            var jobTitle = this.getAttribute('data-job-title');
+            confirmWithdraw(appId, jobTitle);
+        });
+    });
+
+    function confirmWithdraw(appId, jobTitle) {
+        document.getElementById('jobTitle').textContent = jobTitle;
+        document.getElementById('withdrawForm').action = '/withdraw-application/' + appId;
+        document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    // Close modal on outside click
+    document.getElementById('confirmModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
+
+</body>
+</html>

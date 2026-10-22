@@ -1,0 +1,37 @@
+# Secrets - never commit
+.env
+*.env.local
+
+# Local database and its snapshots
+*.db
+*.db.*
+*.sqlite
+*.sqlite3
+
+# Working backups kept while developing (some contain old credentials)
+*.backup
+*.bak
+*.bak[0-9]
+*.pre_*
+templates.backup/
+templates/_deprecated/
+
+# Uploaded resumes - real candidate PII
+uploads/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Stray artifacts
+$S

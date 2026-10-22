@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recruitment Analytics | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+        
+        .dashboard-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+        
+        .btn-outline {
+            background: #fff;
+            color: #64748b;
+            padding: 12px 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline:hover {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        
+        /* KPI Section */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .kpi-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        
+        .kpi-card span {
+            display: block;
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-card strong {
+            font-size: 32px;
+            color: #1f3a5f;
+        }
+        
+        .kpi-card.highlight {
+            border-top: 4px solid #2563eb;
+        }
+
+        .kpi-card.success {
+            border-top: 4px solid #22c55e;
+        }
+
+        .kpi-card.danger {
+            border-top: 4px solid #ef4444;
+        }
+        
+        /* Bulk Actions Bar */
+        .bulk-actions-bar {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bulk-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .bulk-info strong {
+            color: #1f293b;
+        }
+        
+        .btn-bulk-reject {
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-bulk-reject:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-bulk-reject:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-shortlist {
+            background: #16a34a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-shortlist:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-shortlist.disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        .btn-view-interviews {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-view-interviews:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Pool analytics */
+        .analytics {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .panel h4 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .panel .sub {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 18px;
+        }
+
+        .histogram {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            height: 96px;
+            margin-bottom: 10px;
+        }
+
+        .hbar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+
+        .hbar-fill {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, #60a5fa, #2563eb);
+            min-height: 3px;
+            position: relative;
+        }
+
+        .hbar-fill.empty { background: #e5e7eb; }
+
+        .hbar-count {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .hlabels { display: flex; gap: 10px; }
+        .hlabels span { flex: 1; text-align: center; font-size: 11px; color: #9ca3af; }
+
+        .stat-row {
+            display: flex;
+            gap: 22px;
+            padding-top: 14px;
+            margin-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .stat-row div { font-size: 12px; color: #6b7280; }
+        .stat-row strong { display: block; font-size: 17px; color: #1e293b; margin-bottom: 2px; }
+
+        .gap-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 11px;
+        }
+
+        .gap-name {
+            width: 118px;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .gap-track {
+            flex: 1;
+            height: 20px;
+            background: #f1f5f9;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .gap-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #fca5a5, #ef4444);
+            border-radius: 5px;
+        }
+
+        .gap-count {
+            width: 76px;
+            text-align: right;
+            font-size: 12px;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .insight {
+            margin-top: 14px;
+            padding: 11px 14px;
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            font-size: 12.5px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        /* Evidence drawer */
+        .btn-why {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-why:hover { background: #e2e8f0; }
+
+        tr.evidence-row > td {
+            background: #f8fafc;
+            padding: 0 16px 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .evidence-box { padding: 18px 20px; background: white; border-radius: 10px; border: 1px solid #e2e8f0; }
+
+        .evidence-box h5 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .ai-summary {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ev-item { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+
+        .ev-skill {
+            width: 130px;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .ev-quote {
+            flex: 1;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            font-style: italic;
+            border-left: 3px solid #cbd5e1;
+            padding-left: 12px;
+        }
+
+        .ev-quote.none {
+            font-style: normal;
+            color: #b91c1c;
+            border-left-color: #fca5a5;
+        }
+
+        .ev-conf {
+            width: 46px;
+            flex-shrink: 0;
+            text-align: right;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .enterprise-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .enterprise-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .enterprise-table th {
+            padding: 18px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .enterprise-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        
+        .enterprise-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .enterprise-table tr.top-rank {
+            background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+            border-left: 4px solid #2563eb;
+        }
+        
+        .enterprise-table tr.accepted-row {
+            background: linear-gradient(90deg, #dcfce7 0%, #ffffff 100%);
+            border-left: 4px solid #22c55e;
+        }
+        
+        .enterprise-table tr.rejected-row {
+            background: linear-gradient(90deg, #fee2e2 0%, #ffffff 100%);
+            border-left: 4px solid #ef4444;
+        }
+        
+        /* Checkbox */
+        .candidate-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+        
+        /* Rank */
+        .rank-cell {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: 18px;
+        }
+        
+        /* Candidate Info */
+        .candidate-info strong {
+            display: block;
+            color: #1e293b;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        
+        .candidate-info small {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        
+        /* Score Display */
+        .score-display {
+            text-align: center;
+        }
+        
+        .score-main {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        
+        .score-breakdown {
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+        
+        .score-breakdown span {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        
+        /* Skills */
+        .skills-cell {
+            max-width: 240px;
+        }
+        
+        .skill-pill {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            margin: 2px;
+        }
+        
+        /* Education */
+        .education-cell {
+            font-size: 13px;
+            color: #475569;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-accepted {
+            background: #22c55e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-rejected {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Action Buttons */
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-view, .btn-accept, .btn-reject, .btn-skill-gap, .btn-schedule {
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .btn-view {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .btn-view:hover {
+            background: #bae6fd;
+        }
+        
+        .btn-skill-gap {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        
+        .btn-skill-gap:hover {
+            background: #c7d2fe;
+            transform: translateY(-1px);
+        }
+
+        .btn-schedule {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-schedule:hover {
+            background: #bfdbfe;
+            transform: translateY(-1px);
+        }
+        
+        .btn-accept {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-accept:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .decision-made {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .decision-accepted {
+            color: #16a34a;
+        }
+        
+        .decision-rejected {
+            color: #dc2626;
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 24px;
+        }
+        
+        .flash-message {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .flash-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .flash-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .flash-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            background: #fee2e2;
+            color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+        
+        .modal h3 {
+            font-size: 20px;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+        
+        .modal p {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn-modal-cancel {
+            padding: 12px 24px;
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-modal-confirm {
+            padding: 12px 24px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-section {
+                grid-template-columns: 1fr;
+            }
+            .bulk-actions-bar {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category if category else 'success' }}">
+                <i class="fas fa-{{ 'triangle-exclamation' if category == 'warning' else 'circle-check' }}"></i> {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div>
+            <h1>Recruitment Analytics</h1>
+            <p>{{ job_title }} • Minimum Experience {{ min_experience }} years • AI-Powered Ranking</p>
+        </div>
+        <a href="/hr-dashboard" class="btn-outline"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </header>
+
+    <!-- KPI -->
+    <section class="kpi-section">
+        <div class="kpi-card">
+            <span>Total Candidates</span>
+            <strong>{{ results|length }}</strong>
+        </div>
+        <div class="kpi-card highlight">
+            <span>Top Match Score</span>
+            <strong>{{ results[0].score if results else 0 }}%</strong>
+        </div>
+        <div class="kpi-card success">
+            <span>Accepted</span>
+            <strong>{{ accepted_count }}</strong>
+        </div>
+        <div class="kpi-card danger">
+            <span>Rejected</span>
+            <strong>{{ rejected_count }}</strong>
+        </div>
+    </section>
+
+    <!-- BULK ACTIONS BAR -->
+    <div class="bulk-actions-bar">
+        <div class="bulk-info">
+            <strong>{{ pending_count }}</strong> pending | 
+            <strong>{{ accepted_count }}</strong> accepted | 
+            <strong>{{ rejected_count }}</strong> rejected
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/hr/shortlist/{{ job_id }}"
+               class="btn-shortlist {% if accepted_count == 0 %}disabled{% endif %}"
+               {% if accepted_count == 0 %}title="Accept at least one candidate first"{% endif %}>
+                <i class="fas fa-file-arrow-down"></i>
+                Shortlist PDF{% if accepted_count %} ({{ accepted_count }}){% endif %}
+            </a>
+            <a href="/hr/interviews" class="btn-view-interviews">
+                <i class="fas fa-calendar-alt"></i> View Interviews
+            </a>
+            {% if pending_count > 0 %}
+            <button type="button" class="btn-bulk-reject" onclick="openModal()">
+                <i class="fas fa-times-circle"></i>
+                Reject All Remaining
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- POOL ANALYTICS -->
+    {% if analytics %}
+    <div class="analytics">
+        <div class="panel">
+            <h4>Score Distribution</h4>
+            <div class="sub">Where this applicant pool actually sits</div>
+            <div class="histogram">
+                {% for band in analytics.bands %}
+                <div class="hbar">
+                    <div class="hbar-count">{{ band.count }}</div>
+                    <div class="hbar-fill {% if band.count == 0 %}empty{% endif %}"
+                         style="height: {{ band.height if band.count else 3 }}%"></div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="hlabels">
+                {% for band in analytics.bands %}<span>{{ band.label }}</span>{% endfor %}
+            </div>
+            <div class="stat-row">
+                <div><strong>{{ analytics.average }}%</strong>average</div>
+                <div><strong>{{ analytics.median }}%</strong>median</div>
+                <div><strong>{{ analytics.spread }}</strong>point spread</div>
+                <div><strong>{{ analytics.scored_by|join(', ') }}</strong>scored by</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h4>Requirements the pool is failing</h4>
+            <div class="sub">Across {{ analytics.graded }} evaluated candidate(s)</div>
+            {% if analytics.gaps %}
+                {% for gap in analytics.gaps %}
+                <div class="gap-row">
+                    <div class="gap-name">{{ gap.skill }}</div>
+                    <div class="gap-track"><div class="gap-bar" style="width: {{ gap.share }}%"></div></div>
+                    <div class="gap-count">{{ gap.missing }}/{{ analytics.graded }} missing</div>
+                </div>
+                {% endfor %}
+                {% if analytics.gaps[0].share >= 70 %}
+                <div class="insight">
+                    <strong>{{ analytics.gaps[0].share }}% of applicants lack {{ analytics.gaps[0].skill }}.</strong>
+                    When almost nobody meets a requirement, the requirement is usually
+                    the problem - consider whether it is genuinely essential.
+                </div>
+                {% endif %}
+            {% else %}
+                <p style="color:#16a34a;font-size:14px;padding:14px 0;">
+                    Every evaluated candidate demonstrates all required skills.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- RESULTS TABLE -->
+    <section class="table-card">
+        {% if results %}
+        <form id="bulkForm" method="post" action="/hr/bulk-reject/{{ job_id }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <table class="enterprise-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" id="selectAll" class="candidate-checkbox" onchange="toggleAll(this)">
+                    </th>
+                    <th style="width: 50px;">Rank</th>
+                    <th>Candidate</th>
+                    <th style="width: 120px;">AI Match Score</th>
+                    <th>Skills</th>
+                    <th>Experience</th>
+                    <th>Status</th>
+                    <th style="width: 320px;">HR Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in results %}
+                <tr class="{% if r.rank == 1 %}top-rank{% endif %} {% if r.status == 'Accepted' %}accepted-row{% elif r.status == 'Rejected' %}rejected-row{% endif %}">
+                    <td>
+                        {% if r.status == 'Pending' %}
+                        <input type="checkbox" name="candidate_ids" value="{{ r.id }}" class="candidate-checkbox row-checkbox">
+                        {% endif %}
+                    </td>
+                    
+                    <td class="rank-cell">#{{ r.rank }}</td>
+
+                    <td class="candidate-info">
+                        <strong>{{ r.name }}</strong>
+                        {% if r.summary %}
+                            <small title="{{ r.summary }}">{{ r.summary[:90] }}{% if r.summary|length > 90 %}...{% endif %}</small>
+                        {% elif r.scored_by == 'llm' %}
+                            <small>Evaluated by {{ r.scored_by }}</small>
+                        {% else %}
+                            <small>Local semantic evaluation</small>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="score-display">
+                            <div class="score-main">{{ r.score }}%</div>
+                            <div class="score-breakdown">
+                                {% if r.has_breakdown %}
+                                <span title="Semantic similarity">S:{{ r.breakdown.semantic }}%</span>
+                                <span title="Keyword (TF-IDF) overlap">T:{{ r.breakdown.tfidf }}%</span>
+                                <span title="Required-skill match">K:{{ r.breakdown.skills }}%</span>
+                                <span title="Experience">E:{{ r.breakdown.experience }}%</span>
+                                <span title="Education">D:{{ r.breakdown.education }}%</span>
+                                {% else %}
+                                <span title="Scored before component tracking existed">breakdown unavailable</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="skills-cell">
+                        {% for s in r.skills[:5] %}
+                            <span class="skill-pill">{{ s }}</span>
+                        {% endfor %}
+                        {% if r.skills|length > 5 %}
+                            <span class="skill-pill">+{{ r.skills|length - 5 }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="education-cell">
+                        <strong>{{ r.experience }} years</strong><br>
+                        <small>{{ r.education[0] if r.education else 'Not specified' }}</small>
+                    </td>
+
+                    <td>
+                        {% if r.status == 'Accepted' %}
+                            <span class="status-badge status-accepted">
+                                <i class="fas fa-check-circle"></i> ACCEPTED
+                            </span>
+                        {% elif r.status == 'Rejected' %}
+                            <span class="status-badge status-rejected">
+                                <i class="fas fa-times-circle"></i> REJECTED
+                            </span>
+                        {% else %}
+                            <span class="status-badge status-pending">
+                                <i class="fas fa-clock"></i> PENDING
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="action-group">
+                            <a href="/view_resume/{{ r.resume_file }}" target="_blank" class="btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            
+                            <a href="/hr/skill-gap/{{ r.id }}" class="btn-skill-gap">
+                                <i class="fas fa-chart-simple"></i> Skill Gap
+                            </a>
+
+                            {% if r.summary or r.evidence %}
+                            <button type="button" class="btn-why"
+                                    onclick="toggleEvidence({{ r.id }})">
+                                <i class="fas fa-quote-left"></i> Why?
+                            </button>
+                            {% endif %}
+
+                            {% if r.status == 'Pending' %}
+                                <button type="button" class="btn-accept"
+                                        onclick="postAction('/hr/decision/{{ r.id }}/accept', 'Accept {{ r.name }}? An email will be sent automatically.')">
+                                    <i class="fas fa-check"></i> Accept
+                                </button>
+
+                                <button type="button" class="btn-reject"
+                                        onclick="postAction('/hr/decision/{{ r.id }}/reject', 'Reject {{ r.name }}? An email will be sent automatically.')">
+                                    <i class="fas fa-xmark"></i> Reject
+                                </button>
+                            {% elif r.status == 'Accepted' %}
+                                <a href="/hr/schedule-interview/{{ r.id }}" class="btn-schedule">
+                                    <i class="fas fa-calendar-plus"></i> Schedule
+                                </a>
+                            {% elif r.status == 'Rejected' %}
+                                <span class="decision-made decision-rejected">
+                                    <i class="fas fa-times-circle"></i> Rejected
+                                </span>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+
+                {% if r.summary or r.evidence %}
+                <tr class="evidence-row" id="evidence-{{ r.id }}" style="display:none">
+                    <td colspan="8">
+                        <div class="evidence-box">
+                            {% if r.summary %}
+                            <div class="ai-summary">{{ r.summary }}</div>
+                            {% endif %}
+                            {% if r.evidence %}
+                            <h5>Evidence found in the resume</h5>
+                            {% for skill, quote in r.evidence.items() %}
+                            <div class="ev-item">
+                                <div class="ev-skill">{{ skill.title() }}</div>
+                                {% if quote %}
+                                <div class="ev-quote">"{{ quote }}"</div>
+                                {% else %}
+                                <div class="ev-quote none">No supporting evidence found in the resume.</div>
+                                {% endif %}
+                                <div class="ev-conf">
+                                    {{ (r.breakdown_confidence.get(skill, 0) * 100)|round|int }}%
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <h3>No candidates found</h3>
+            <p>Applications will appear here after candidates apply for this position.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</div>
+
+<!-- Single hidden form used to POST state-changing actions (was GET links). -->
+<form id="actionForm" method="post" style="display:none">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+
+<script>
+    function postAction(url, message) {
+        if (message && !confirm(message)) return;
+        var form = document.getElementById('actionForm');
+        form.action = url;
+        form.submit();
+    }
+</script>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <div class="modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3>Reject All Remaining?</h3>
+        <p>This will reject all <strong id="pendingCount">{{ pending_count }}</strong> pending candidate(s). This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+            <button type="button" class="btn-modal-confirm" onclick="submitBulkReject()">
+                Yes, Reject All
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleEvidence(id) {
+        var row = document.getElementById('evidence-' + id);
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+    }
+
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+    
+    function openModal() {
+        document.getElementById('confirmModal').classList.add('active');
+    }
+    
+    function closeModal() {
+        document.getElementById('confirmModal').classList.remove('active');
+    }
+    
+    function submitBulkReject() {
+        document.getElementById('bulkForm').submit();
+    }
+    
+    document.getElementById('confirmModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+
+</body>
+</html>

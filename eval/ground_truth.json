@@ -1,0 +1,57 @@
+{
+  "_readme": [
+    "Human relevance grades per job, used to measure ranking quality.",
+    "Grade scale: 4 = strong fit, 3 = good, 2 = weak, 1 = poor, 0 = irrelevant.",
+    "These grades are PROVISIONAL - drafted by reading each resume against the job",
+    "requirements. Edit them to match your own judgement; the measured accuracy is",
+    "only as meaningful as these labels."
+  ],
+  "1": {
+    "job_title": "Software Engineer",
+    "requirements": "data structures, algorithms, databases, Python, Java (0+ years)",
+    "rationale": {
+      "Deep Patil": "Backend: SQL, MongoDB, microservices, APIs - closest to databases + systems work",
+      "Eden": "Python + ML - has one required skill, applied domain",
+      "Shreyash Shigwan": "Python + AWS - has one required skill, but cloud-oriented",
+      "Pranjal Pimple": "Frontend only - no required skill, but application development",
+      "Chinmay Jandrapalli": "DevOps/infrastructure - no required skill (NOTE: resume file was overwritten)",
+      "Nishant Mishra": "DevOps/infrastructure - no required skill (NOTE: shares the overwritten file)"
+    },
+    "relevance": {
+      "Deep Patil": 4,
+      "Eden": 3,
+      "Shreyash Shigwan": 3,
+      "Pranjal Pimple": 2,
+      "Chinmay Jandrapalli": 1,
+      "Nishant Mishra": 1
+    }
+  },
+  "5": {
+    "job_title": "Software Engineer (Test Set)",
+    "requirements": "data structures, algorithms, databases, Python, Java (2+ years)",
+    "rationale": {
+      "Arjun Desai": "6 yrs Python+Java, DB optimisation, DSA coursework - states everything explicitly",
+      "Meera Krishnan": "LRU cache + Dijkstra + Raft (DSA), Postgres schema design, Java+Python, 4 yrs by dates",
+      "Priya Raghavan": "11 yrs, deep Postgres, Python/Java/Go - strong, algorithms less evident",
+      "Ananya Bose": "ICPC + Candidate Master, wrote a SQL engine with hash/sort-merge joins - but 0 professional years vs a 2-year bar",
+      "Ritika Chandra": "Strong Python + Postgres feature store, but ML-focused: no Java, little algorithms work",
+      "Sameer Qureshi": "Postgres + some Python, collaborative filtering from scratch - but JS-first, no Java",
+      "Farah Siddiqui": "Strong frontend engineer, quadtree indexing - but no Python, Java or databases",
+      "Nikhil Pawar": "QA: basic Selenium/Java and basic SQL only, no development or algorithms work",
+      "Rohit Bhalla": "Every required keyword listed, zero supporting evidence, fresher",
+      "Devendra Shetty": "Embedded C/C++ and firmware - no Python, Java or databases at all"
+    },
+    "relevance": {
+      "Arjun Desai": 4,
+      "Meera Krishnan": 4,
+      "Priya Raghavan": 3,
+      "Ananya Bose": 3,
+      "Ritika Chandra": 2,
+      "Sameer Qureshi": 2,
+      "Farah Siddiqui": 1,
+      "Nikhil Pawar": 1,
+      "Rohit Bhalla": 1,
+      "Devendra Shetty": 0
+    }
+  }
+}

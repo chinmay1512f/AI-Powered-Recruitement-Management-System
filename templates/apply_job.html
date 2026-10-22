@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply for {{ job.job_title }} | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .brand h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .btn-back {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            gap: 8px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .progress-step.active {
+            color: #2563eb;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .progress-step.active .step-number {
+            background: #2563eb;
+            color: white;
+        }
+
+        .progress-line {
+            width: 60px;
+            height: 2px;
+            background: #e2e8f0;
+        }
+
+        /* Card */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            padding: 32px;
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .job-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        /* Job Info */
+        .job-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 24px 32px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .info-content h4 {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-content p {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Form Section */
+        .form-section {
+            padding: 32px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #3b82f6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e293b;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input[readonly] {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            background: #ffffff;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .file-label:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .file-label i {
+            font-size: 40px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .file-label h4 {
+            font-size: 15px;
+            color: #374151;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .file-label p {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .file-types {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .file-type {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Notice */
+        .notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            margin: 0 32px 24px;
+        }
+
+        .notice i {
+            color: #3b82f6;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .notice p {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .notice strong {
+            color: #1e40af;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            padding: 0 32px 32px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header { padding: 16px 20px; }
+            .job-info { grid-template-columns: 1fr; }
+            .card-header, .form-section, .submit-section { padding: 24px; }
+            .notice { margin: 0 24px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <h2>Job Application</h2>
+        </div>
+        <a href="/candidate-dashboard" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </header>
+
+    <div class="container">
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-step active">
+                <div class="step-number">1</div>
+                <span>Job Details</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step active">
+                <div class="step-number">2</div>
+                <span>Apply</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <div class="step-number">3</div>
+                <span>Review</span>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="job-badge">
+                    <i class="fas fa-check-circle"></i> Open Position
+                </div>
+                <h1>{{ job.job_title }}</h1>
+                <p>Review the details and submit your application</p>
+            </div>
+
+            <!-- Job Info -->
+            <div class="job-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Skills</h4>
+                        <p>{{ job.required_skills[:25] }}{% if job.required_skills|length > 25 %}...{% endif %}</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Experience</h4>
+                        <p>{{ job.min_experience }}+ Years</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Process</h4>
+                        <p>AI Screening</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="form-section">
+                
+                <div class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" value="{{ candidate.name }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 32px;">
+                        <i class="fas fa-file-upload"></i>
+                        Resume Upload
+                    </div>
+
+                    <div class="form-group">
+                        <div class="file-upload">
+                            <input type="file" name="resume" accept=".pdf,.doc,.docx" required class="file-input" id="fileInput">
+                            <label for="fileInput" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h4>Click to upload your resume</h4>
+                                <p>PDF, DOC, or DOCX up to 5MB</p>
+                                <div class="file-types">
+                                    <span class="file-type">PDF</span>
+                                    <span class="file-type">DOC</span>
+                                    <span class="file-type">DOCX</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Notice -->
+                <div class="notice">
+                    <i class="fas fa-info-circle"></i>
+                    <p>
+                        <strong>AI-Powered Review:</strong> Your resume will be automatically analyzed and matched against job requirements. You'll receive a match score within minutes of submission.
+                    </p>
+                </div>
+
+                <!-- Submit -->
+                <div class="submit-section">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Application
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                document.querySelector('.file-label h4').textContent = fileName;
+                document.querySelector('.file-label i').style.color = '#2563eb';
+                document.querySelector('.file-label').style.borderColor = '#2563eb';
+                document.querySelector('.file-label').style.background = '#eff6ff';
+            }
+        });
+    </script>
+
+</body>
+</html>

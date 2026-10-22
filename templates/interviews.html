@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Schedule | Resume Intelligence System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .dashboard-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dashboard-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: #64748b;
+            padding: 12px 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f293b;
+            margin: 32px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .interview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .interview-table th {
+            background: #f8fafc;
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .interview-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .interview-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .candidate-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .candidate-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .candidate-info strong {
+            display: block;
+            color: #1f293b;
+            font-size: 15px;
+        }
+
+        .candidate-info span {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .datetime-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .datetime-cell i {
+            color: #3b82f6;
+            font-size: 18px;
+        }
+
+        .datetime-cell div strong {
+            display: block;
+            color: #1f293b;
+        }
+
+        .datetime-cell div span {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .type-video { background: #dbeafe; color: #1e40af; }
+        .type-phone { background: #fef3c7; color: #92400e; }
+        .type-inperson { background: #dcfce7; color: #166534; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-scheduled { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-complete {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #16a34a;
+        }
+
+        .btn-cancel {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .link-cell a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .link-cell a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Interview Schedule</h1>
+            <p>Manage all candidate interviews</p>
+        </div>
+        <a href="/hr-dashboard" class="btn-outline"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </header>
+
+    <!-- Upcoming Interviews -->
+    <h2 class="section-title">
+        <i class="fas fa-calendar-alt"></i> Upcoming Interviews ({{ upcoming|length }})
+    </h2>
+
+    {% if upcoming %}
+    <div class="card">
+        <table class="interview-table">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Position</th>
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interview in upcoming %}
+                <tr>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="candidate-avatar">{{ interview.candidate_name[0] }}</div>
+                            <div class="candidate-info">
+                                <strong>{{ interview.candidate_name }}</strong>
+                                <span>{{ interview.candidate_email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-weight: 600; color: #1f293b;">{{ interview.job.job_title }}</span>
+                    </td>
+                    <td>
+                        <div class="datetime-cell">
+                            <i class="far fa-clock"></i>
+                            <div>
+                                <strong>{{ interview.interview_date.strftime('%b %d, %Y') }}</strong>
+                                <span>{{ interview.interview_date.strftime('%I:%M %p') }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="type-badge type-{{ interview.interview_type.lower().replace(' ', '') }}">
+                            {% if interview.interview_type == 'Video Call' %}
+                                <i class="fas fa-video"></i>
+                            {% elif interview.interview_type == 'Phone Call' %}
+                                <i class="fas fa-phone"></i>
+                            {% else %}
+                                <i class="fas fa-building"></i>
+                            {% endif %}
+                            {{ interview.interview_type }}
+                        </span>
+                    </td>
+                    <td class="link-cell">
+                        {% if interview.interview_link %}
+                            <a href="{{ interview.interview_link }}" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Join Meeting
+                            </a>
+                        {% elif interview.location %}
+                            <span style="font-size: 13px; color: #6b7280;">
+                                <i class="fas fa-map-marker-alt"></i> {{ interview.location }}
+                            </span>
+                        {% else %}
+                            <span style="font-size: 13px; color: #9ca3af;">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="action-group">
+                            <button type="button" class="btn-action btn-complete"
+                                    onclick="postAction('/hr/complete-interview/{{ interview.id }}', 'Mark this interview as completed?')">
+                                <i class="fas fa-check"></i> Complete
+                            </button>
+                            <button type="button" class="btn-action btn-cancel"
+                                    onclick="postAction('/hr/cancel-interview/{{ interview.id }}', 'Cancel this interview? The candidate will be notified.')">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card empty-state">
+        <p>No upcoming interviews scheduled</p>
+    </div>
+    {% endif %}
+
+    <!-- Past Interviews -->
+    {% if past %}
+    <h2 class="section-title">
+        <i class="fas fa-history"></i> Past Interviews ({{ past|length }})
+    </h2>
+
+    <div class="card">
+        <table class="interview-table">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interview in past %}
+                <tr>
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="candidate-avatar">{{ interview.candidate_name[0] }}</div>
+                            <div class="candidate-info">
+                                <strong>{{ interview.candidate_name }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ interview.job.job_title }}</td>
+                    <td>{{ interview.interview_date.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        <span class="type-badge type-{{ interview.interview_type.lower().replace(' ', '') }}">
+                            {{ interview.interview_type }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if interview.status == 'Completed' %}
+                            <span class="status-badge status-completed">
+                                <i class="fas fa-check-circle"></i> Completed
+                            </span>
+                        {% else %}
+                            <span class="status-badge status-scheduled">
+                                <i class="fas fa-clock"></i> Passed
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Cancelled Interviews -->
+    {% if cancelled %}
+    <h2 class="section-title">
+        <i class="fas fa-ban"></i> Cancelled ({{ cancelled|length }})
+    </h2>
+
+    <div class="card">
+        <table class="interview-table">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Position</th>
+                    <th>Original Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interview in cancelled %}
+                <tr style="opacity: 0.6;">
+                    <td>
+                        <div class="candidate-cell">
+                            <div class="candidate-avatar" style="background: #9ca3af;">{{ interview.candidate_name[0] }}</div>
+                            <div class="candidate-info">
+                                <strong>{{ interview.candidate_name }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ interview.job.job_title }}</td>
+                    <td>{{ interview.interview_date.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        <span class="status-badge status-cancelled">
+                            <i class="fas fa-ban"></i> Cancelled
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Single hidden form used to POST state-changing actions (was GET links). -->
+<form id="actionForm" method="post" style="display:none">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+
+<script>
+    function postAction(url, message) {
+        if (message && !confirm(message)) return;
+        var form = document.getElementById('actionForm');
+        form.action = url;
+        form.submit();
+    }
+</script>
+
+</body>
+</html>
